@@ -1,0 +1,13 @@
+/* Design tokens: colors, fonts, themes. Change the look of the whole site here. */
+:root{
+  --bg:#F8F9FB; --surface:#FFFFFF; --ink:#13161B; --muted:#5B6270; --line:#E3E6EC; --accent:#2D4BEB; --phone:#13161B;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Hanken Grotesk","Segoe UI",system-ui,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0F1115;--surface:#171A20;--ink:#EEF0F4;--muted:#9AA1AE;--line:#272B33;--accent:#8EA2FF;--phone:#05060A;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#0F1115;--surface:#171A20;--ink:#EEF0F4;--muted:#9AA1AE;--line:#272B33;--accent:#8EA2FF;--phone:#05060A;color-scheme:dark}
