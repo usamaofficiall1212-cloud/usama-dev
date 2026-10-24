@@ -12,9 +12,10 @@ const PROFILE = {
   email: "usamaofficiall1212@gmail.com",
   github: "https://github.com/usamaofficiall1212-cloud",
   linkedin: "https://www.linkedin.com/in/iamusamamughall",
+  web3formsKey: "55dda379-ce8c-46f3-a2f0-3f25eee8d61d",                         // Web3Forms access key (free, 250 messages/month). See README.
   formEndpoint: "",                        // Formspree URL, e.g. "https://formspree.io/f/abcdwxyz". Empty = form opens your email app.
   cv: "assets/Usama_CV_2026.pdf",          // "" hides the button
-     photo: "images/me.jpg",                                // e.g. "images/me.jpg"; empty shows a phone with your lead project
+  photo: "images/me.jpg",                  // e.g. "images/me.jpg"; empty shows a phone with your lead project
   headline: "I build mobile apps, from the screen to the server.",
   intro: "I’m Muhammad Usama Mughal, a mobile developer in Rawalpindi. I build Android apps with Kotlin and Jetpack Compose, cross-platform apps with Flutter, and the C# backends behind them.",
   stack: "Kotlin · Jetpack Compose · Flutter · ASP.NET Core · SQL Server · Firebase",

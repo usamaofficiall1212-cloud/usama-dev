@@ -219,6 +219,35 @@ function initCase(projects) {
 }
 
 /* ---------- Contact form ---------- */
+/* Sending options, in order: Web3Forms (web3formsKey), Formspree (formEndpoint), or the visitor's email app. */
+async function sendMessage(profile, data) {
+  if (profile.web3formsKey) {
+    const res = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({
+        access_key: profile.web3formsKey,
+        subject: "Portfolio message from " + data.name,
+        from_name: "Portfolio website",
+        name: data.name, email: data.email, message: data.message
+      })
+    });
+    const out = await res.json();
+    if (!res.ok || !out.success) throw new Error(out.message || "Request failed");
+    return true;
+  }
+  if (profile.formEndpoint) {
+    const res = await fetch(profile.formEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error("Request failed");
+    return true;
+  }
+  return false;                                      // nothing configured
+}
+
 function initForm(profile) {
   const form = byId("contact-form");
   const status = byId("form-status");
@@ -227,24 +256,19 @@ function initForm(profile) {
     e.preventDefault();
     if (!form.reportValidity()) return;
     const data = Object.fromEntries(new FormData(form));
-    if (data._gotcha) return;                       // spam trap: real visitors never fill this field
-    if (!profile.formEndpoint) {                    // no form service set up: open the visitor's email app
-      const body = data.message + "\n\n" + data.name + " (" + data.email + ")";
-      location.href = "mailto:" + profile.email + "?subject=" + encodeURIComponent("Portfolio message from " + data.name) + "&body=" + encodeURIComponent(body);
-      status.textContent = "Opening your email app…";
-      return;
-    }
+    if (data._gotcha) return;                        // spam trap: real visitors never fill this field
     button.disabled = true;
     status.textContent = "Sending…";
     try {
-      const res = await fetch(profile.formEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify(data)
-      });
-      if (!res.ok) throw new Error("Request failed");
-      form.reset();
-      status.textContent = "Thanks, your message was sent. I’ll reply by email.";
+      const sent = await sendMessage(profile, data);
+      if (sent) {
+        form.reset();
+        status.textContent = "Thanks, your message was sent. I’ll reply by email.";
+      } else {                                       // fallback: open the visitor's email app
+        const body = data.message + "\n\n" + data.name + " (" + data.email + ")";
+        location.href = "mailto:" + profile.email + "?subject=" + encodeURIComponent("Portfolio message from " + data.name) + "&body=" + encodeURIComponent(body);
+        status.textContent = "Opening your email app…";
+      }
     } catch (err) {
       status.textContent = "The message could not be sent. Please email " + profile.email + " instead.";
     }
