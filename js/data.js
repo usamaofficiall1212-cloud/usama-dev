@@ -14,7 +14,7 @@ const PROFILE = {
   linkedin: "https://www.linkedin.com/in/iamusamamughall",
   formEndpoint: "",                        // Formspree URL, e.g. "https://formspree.io/f/abcdwxyz". Empty = form opens your email app.
   cv: "assets/Usama_CV_2026.pdf",          // "" hides the button
-  photo: "",                                // e.g. "images/me.jpg"; empty shows a phone with your lead project
+     photo: "images/me.jpg",                                // e.g. "images/me.jpg"; empty shows a phone with your lead project
   headline: "I build mobile apps, from the screen to the server.",
   intro: "I’m Muhammad Usama Mughal, a mobile developer in Rawalpindi. I build Android apps with Kotlin and Jetpack Compose, cross-platform apps with Flutter, and the C# backends behind them.",
   stack: "Kotlin · Jetpack Compose · Flutter · ASP.NET Core · SQL Server · Firebase",
