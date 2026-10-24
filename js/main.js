@@ -97,7 +97,15 @@ function renderHero(profile, projects) {
 
   const host = byId("h-phone");
   if (profile.photo) {
-    const img = el("img", "photo"); img.src = profile.photo; img.alt = profile.name; host.appendChild(img);
+    const frame = el("div", "photo-frame");
+    const img = el("img", "photo");
+    img.src = profile.photo; img.alt = profile.name;
+    img.width = 280; img.height = 350;               // reserves space so the page doesn't jump while loading
+    img.decoding = "async"; img.fetchPriority = "high";
+    img.style.objectPosition = profile.photoPosition || "50% 25%";
+    frame.appendChild(img);
+    host.classList.add("has-photo");
+    host.appendChild(frame);
   } else {
     const lead = projects.find(p => p.shots.length) || projects[0];
     host.appendChild(buildPhone(lead && lead.shots.length ? [lead.shots[0]] : [], lead ? lead.name : "U").phone);
