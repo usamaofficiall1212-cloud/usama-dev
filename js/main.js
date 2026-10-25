@@ -337,6 +337,46 @@ function initReveal() {
   });
 }
 
+/* ---------- Custom cursor (mouse devices only; phones and tablets never load it) ---------- */
+function initCursor(profile) {
+  if (profile.customCursor === false) return;
+  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  const root = document.documentElement;
+  const dot = el("div", "cursor-dot");
+  const ring = el("div", "cursor-ring", "<i></i>");
+  document.body.append(ring, dot);
+
+  const ease = reduceMotion() ? 1 : 0.18;           // 1 = follows instantly
+  let x = 0, y = 0, rx = 0, ry = 0, frame = 0, seen = false;
+  const INTERACTIVE = "a, button, [role=button], summary";
+
+  function tick() {                                  // runs only while the ring is still catching up
+    rx += (x - rx) * ease;
+    ry += (y - ry) * ease;
+    dot.style.transform = "translate3d(" + x + "px," + y + "px,0)";
+    ring.style.transform = "translate3d(" + rx + "px," + ry + "px,0)";
+    frame = Math.abs(x - rx) > 0.1 || Math.abs(y - ry) > 0.1 ? requestAnimationFrame(tick) : 0;
+  }
+
+  document.addEventListener("pointermove", e => {
+    const mouse = e.pointerType === "mouse";
+    root.classList.toggle("cursor-out", !mouse);
+    if (!mouse) return;
+    x = e.clientX; y = e.clientY;
+    if (!seen) { seen = true; rx = x; ry = y; }
+    const t = e.target;
+    root.classList.toggle("cursor-on", !t.closest("dialog, input, textarea, select"));
+    ring.classList.toggle("link", !!t.closest(INTERACTIVE));
+    ring.classList.toggle("view", !!t.closest(".screens img"));
+    if (!frame) frame = requestAnimationFrame(tick);
+  }, { passive: true });
+
+  document.addEventListener("pointerdown", () => ring.classList.add("down"));
+  document.addEventListener("pointerup", () => ring.classList.remove("down"));
+  root.addEventListener("mouseleave", () => root.classList.add("cursor-out"));
+  root.addEventListener("mouseenter", () => root.classList.remove("cursor-out"));
+}
+
 /* ---------- Start ---------- */
 renderHero(PROFILE, PROJECTS);
 PROJECTS.forEach(p => byId("projects").appendChild(renderProject(p)));
@@ -344,4 +384,4 @@ renderAbout(PROFILE, EXPERIENCE);
 renderSkills(SKILLS);
 renderContact(PROFILE);
 byId("yr").textContent = new Date().getFullYear();
-initReveal(); initLightbox(); initCase(PROJECTS); initForm(PROFILE); initTheme(); initNavHighlight();
+initReveal(); initCursor(PROFILE); initLightbox(); initCase(PROJECTS); initForm(PROFILE); initTheme(); initNavHighlight();
