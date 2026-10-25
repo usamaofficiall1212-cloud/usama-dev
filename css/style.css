@@ -14,15 +14,16 @@ h2 { font: 700 1.5rem var(--display); letter-spacing: -0.01em; margin: 0 0 2rem;
 .brand { font: 700 1.05rem var(--display); text-decoration: none; margin-right: auto; }
 nav { display: flex; gap: 0.15rem; }
 nav a { padding: 0.4rem 0.75rem; border-radius: 8px; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
-nav a:hover, nav a[aria-current="true"] { color: var(--ink); background: var(--surface); }
+
 .theme { padding: 0.4rem 0.8rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: 500 0.85rem var(--body); cursor: pointer; }
-.theme:hover { border-color: var(--accent); }
+
 
 /* Buttons */
 .btn { display: inline-block; padding: 0.7rem 1.2rem; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font: 500 1rem var(--body); text-decoration: none; }
-.btn:hover { border-color: var(--accent); }
+
+nav a[aria-current="true"] { color: var(--ink); background: var(--surface); }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn.primary:hover { filter: brightness(1.08); }
+
 [data-theme="dark"] .btn.primary { color: #0F1115; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #0F1115; } }
 
@@ -34,7 +35,7 @@ nav a:hover, nav a[aria-current="true"] { color: var(--ink); background: var(--s
 .hero .stack { font-size: 0.95rem; }
 .hero-phone { display: flex; justify-content: center; }
 .hero-phone .phone { transform: rotate(3deg); transition: transform 0.4s; }
-.hero-phone .phone:hover { transform: rotate(0); }
+
 .photo-frame { position: relative; width: min(280px, 100%); }
 .photo-frame::before { content: ""; position: absolute; inset: 16px -16px -16px 16px; border-radius: 28px; background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
 .photo { position: relative; display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 24px; border: 1px solid var(--line); box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.45); background: var(--line); }
@@ -53,7 +54,7 @@ nav a:hover, nav a[aria-current="true"] { color: var(--ink); background: var(--s
 .stage { --t: var(--tint, var(--accent)); display: flex; justify-content: center; padding: 2.5rem 1rem; border-radius: 20px; background: color-mix(in srgb, var(--t) 12%, var(--surface)); border: 1px solid color-mix(in srgb, var(--t) 25%, var(--line)); }
 .phone { width: min(220px, 100%); aspect-ratio: 9/19; padding: 8px; border-radius: 34px; background: var(--phone); box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.4); }
 .stage .phone { transition: transform 0.3s; }
-.stage .phone:hover { transform: translateY(-4px); }
+
 .screens { height: 100%; display: flex; overflow-x: auto; overflow-y: hidden; border-radius: 27px; background: var(--line); scroll-snap-type: x mandatory; scrollbar-width: none; }
 .screens::-webkit-scrollbar { display: none; }
 .screens > * { flex: 0 0 100%; width: 100%; height: 100%; object-fit: cover; scroll-snap-align: center; }
@@ -61,7 +62,7 @@ nav a:hover, nav a[aria-current="true"] { color: var(--ink); background: var(--s
 .ph { display: grid; place-items: center; font: 700 3rem var(--display); color: var(--muted); }
 .gallery-nav { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1.25rem; }
 .nav-btn { width: 2.25rem; height: 2.25rem; border: 1px solid var(--line); border-radius: 50%; background: var(--bg); color: var(--ink); font: 500 1.25rem/1 var(--body); cursor: pointer; }
-.nav-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+
 .nav-btn:disabled { opacity: 0.35; cursor: default; }
 .dots { display: flex; gap: 0.35rem; }
 .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
@@ -101,7 +102,7 @@ dialog::backdrop { background: rgba(5, 6, 10, 0.88); }
 .lb { height: 100%; display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 1rem; }
 #lb-img { max-width: min(90vw, 460px); max-height: 90vh; border-radius: 24px; object-fit: contain; }
 .lb-btn { width: 3rem; height: 3rem; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%; background: rgba(255, 255, 255, 0.08); color: #fff; font: 500 1.6rem/1 var(--body); cursor: pointer; }
-.lb-btn:hover { background: rgba(255, 255, 255, 0.2); }
+
 .lb-close { position: fixed; top: calc(1rem + env(safe-area-inset-top, 0px)); right: 1rem; }
 
 @media (max-width: 760px) {
@@ -145,3 +146,52 @@ button.btn { cursor: pointer; }
 .decision h4 { margin: 0 0 0.2rem; font: 500 1rem var(--body); }
 .decision p { color: var(--muted); font-size: 0.98rem; }
 @media (max-width: 760px) { .contact-grid { grid-template-columns: 1fr; gap: 2rem; } .case { padding: 2rem 1.25rem 1.5rem; } }
+
+/* ===== Motion: transform and opacity only, so it runs on the GPU compositor with almost no cost ===== */
+html { -webkit-tap-highlight-color: transparent; }
+.btn, .theme, .nav-btn, .lb-btn { touch-action: manipulation; }
+.btn, .theme, .nav-btn, nav a { transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease, filter 0.2s ease; }
+.tags li { transition: border-color 0.2s ease, color 0.2s ease; }
+
+/* Hover effects only on devices that really hover (mouse, trackpad), so touch screens never get stuck states */
+@media (hover: hover) {
+  nav a:hover { color: var(--ink); background: var(--surface); }
+  .theme:hover, .btn:hover { border-color: var(--accent); }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .nav-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .lb-btn:hover { background: rgba(255, 255, 255, 0.2); }
+  .stage .phone:hover { transform: translateY(-6px); }
+  .hero-phone .phone:hover { transform: rotate(0); }
+  .tags li:hover { border-color: var(--accent); color: var(--ink); }
+}
+/* Press feedback for touch and mouse */
+.btn:active, .theme:active, .nav-btn:active { transform: scale(0.96); }
+
+/* Screenshots fade in once loaded */
+.js .screens img { opacity: 0; }
+.js .screens img.loaded { opacity: 1; }
+
+/* Scroll progress bar, driven by the browser (no JavaScript); hidden where unsupported */
+.top::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 100%; height: 2px; background: var(--accent); transform-origin: 0 50%; transform: scaleX(0); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .screens img { transition: opacity 0.4s ease; }
+  .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); transition-delay: calc(var(--i, 0) * 70ms); }
+  .js .reveal.in { opacity: 1; transform: none; }
+  dialog[open] { animation: pop 0.22s ease-out; }
+  dialog[open]::backdrop { animation: fade 0.22s ease-out; }
+  html.theme-anim *, html.theme-anim *::before { transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease !important; }
+  @keyframes pop { from { opacity: 0; transform: translateY(10px) scale(0.98); } }
+  @keyframes fade { from { opacity: 0; } }
+  @supports (animation-timeline: scroll()) {
+    .top::after { animation: progress linear both; animation-timeline: scroll(root); }
+    @keyframes progress { to { transform: scaleX(1); } }
+  }
+}
+
+/* Phones: a blurred header is one of the costliest effects, so use a solid one and a smaller reveal distance */
+@media (max-width: 760px) {
+  .top { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--bg); }
+  .js .reveal { transform: translateY(12px); }
+}

@@ -1,5 +1,7 @@
 /* Rendering and behavior. Reads everything from data.js; contains no content. */
 
+document.documentElement.classList.add("js");   // lets CSS hide items only when JavaScript is running
+
 function el(tag, className, html) {
   const node = document.createElement(tag);
   if (className) node.className = className;
@@ -19,9 +21,11 @@ function buildPhone(shots, name) {
   if (shots.length) {
     shots.forEach((src, i) => {
       const img = el("img");
+      img.addEventListener("load", () => img.classList.add("loaded"));
       img.src = src; img.alt = name + " screenshot " + (i + 1);
       img.loading = i ? "lazy" : "eager"; img.draggable = false;
       screens.appendChild(img);
+      if (img.complete && img.naturalWidth) img.classList.add("loaded");
     });
   } else {
     screens.appendChild(el("div", "ph", name.charAt(0)));
@@ -294,6 +298,8 @@ function initTheme() {
   apply(saved || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
   btn.addEventListener("click", () => {
     const next = root.dataset.theme === "dark" ? "light" : "dark";
+    root.classList.add("theme-anim");                // smooth color change, removed right after
+    setTimeout(() => root.classList.remove("theme-anim"), 350);
     apply(next);
     try { localStorage.setItem("theme", next); } catch (e) {}
   });
@@ -313,6 +319,24 @@ function initNavHighlight() {
   sections.forEach(s => s && io.observe(s));
 }
 
+/* ---------- Scroll reveal: each item fades up once, then the observer lets go of it ---------- */
+function initReveal() {
+  if (!("IntersectionObserver" in window) || reduceMotion()) return;
+  const targets = document.querySelectorAll("main h2, .project .stage, .project .info, .about > *, .timeline li, .skills > div, .contact-grid > *");
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      en.target.classList.add("in");
+      io.unobserve(en.target);
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+  targets.forEach(t => {
+    t.classList.add("reveal");
+    t.style.setProperty("--i", Math.min([...t.parentElement.children].indexOf(t), 5));
+    io.observe(t);
+  });
+}
+
 /* ---------- Start ---------- */
 renderHero(PROFILE, PROJECTS);
 PROJECTS.forEach(p => byId("projects").appendChild(renderProject(p)));
@@ -320,4 +344,4 @@ renderAbout(PROFILE, EXPERIENCE);
 renderSkills(SKILLS);
 renderContact(PROFILE);
 byId("yr").textContent = new Date().getFullYear();
-initLightbox(); initCase(PROJECTS); initForm(PROFILE); initTheme(); initNavHighlight();
+initReveal(); initLightbox(); initCase(PROJECTS); initForm(PROFILE); initTheme(); initNavHighlight();
