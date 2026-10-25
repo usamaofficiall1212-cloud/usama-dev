@@ -20,12 +20,18 @@ function buildPhone(shots, name) {
   screens.setAttribute("aria-label", name + " screenshots");
   if (shots.length) {
     shots.forEach((src, i) => {
-      const img = el("img");
-      img.addEventListener("load", () => img.classList.add("loaded"));
+      const img = el("img", i === 0 ? "loading" : "");
+      img.addEventListener("load", () => {
+        img.classList.add("loaded");
+        img.classList.remove("loading");
+      });
       img.src = src; img.alt = name + " screenshot " + (i + 1);
       img.loading = i ? "lazy" : "eager"; img.draggable = false;
       screens.appendChild(img);
-      if (img.complete && img.naturalWidth) img.classList.add("loaded");
+      if (img.complete && img.naturalWidth) {
+        img.classList.add("loaded");
+        img.classList.remove("loading");
+      }
     });
   } else {
     screens.appendChild(el("div", "ph", name.charAt(0)));
@@ -346,19 +352,24 @@ function initCursor(profile) {
   const ring = el("div", "cursor-ring", "<i></i>");
   document.body.append(ring, dot);
 
-  const ease = reduceMotion() ? 1 : 0.18;           // 1 = follows instantly
+  const ease = reduceMotion() ? 1 : 0.18;
   let x = 0, y = 0, rx = 0, ry = 0, frame = 0, seen = false;
   const INTERACTIVE = "a, button, [role=button], summary";
+  let lastMove = 0;
 
-  function tick() {                                  // runs only while the ring is still catching up
+  function tick() {
     rx += (x - rx) * ease;
     ry += (y - ry) * ease;
     dot.style.transform = "translate3d(" + x + "px," + y + "px,0)";
     ring.style.transform = "translate3d(" + rx + "px," + ry + "px,0)";
-    frame = Math.abs(x - rx) > 0.1 || Math.abs(y - ry) > 0.1 ? requestAnimationFrame(tick) : 0;
+    frame = (Math.abs(x - rx) > 0.1 || Math.abs(y - ry) > 0.1) ? requestAnimationFrame(tick) : 0;
   }
 
   document.addEventListener("pointermove", e => {
+    const now = performance.now();
+    if (now - lastMove < 16) return;
+    lastMove = now;
+
     const mouse = e.pointerType === "mouse";
     root.classList.toggle("cursor-out", !mouse);
     if (!mouse) return;
@@ -375,6 +386,11 @@ function initCursor(profile) {
   document.addEventListener("pointerup", () => ring.classList.remove("down"));
   root.addEventListener("mouseleave", () => root.classList.add("cursor-out"));
   root.addEventListener("mouseenter", () => root.classList.remove("cursor-out"));
+
+  document.querySelectorAll("dialog").forEach(d => {
+    d.addEventListener("open", () => root.classList.add("cursor-out"));
+    d.addEventListener("close", () => root.classList.remove("cursor-out"));
+  });
 }
 
 /* ---------- Start ---------- */
