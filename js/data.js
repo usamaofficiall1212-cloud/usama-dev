@@ -1,8 +1,8 @@
 /* All site content lives here. Edit this file to add or change anything on the page.
-   Screenshots: shots: screenshots("folder-name", count)  ->  images/projects/<folder>/01.png ... NN.png
-   Other formats: screenshots("folder-name", 5, "webp"). Use [] for a placeholder. */
+   Screenshots: shots: screenshots("folder-name", count)  ->  images/projects/<folder>/01.webp ... NN.webp
+   Other formats: screenshots("folder-name", 5, "png"). Use [] for a placeholder. */
 
-function screenshots(folder, count, ext = "png") {
+function screenshots(folder, count, ext = "webp") {
   return Array.from({ length: count }, (_, i) =>
     `images/projects/${folder}/${String(i + 1).padStart(2, "0")}.${ext}`);
 }

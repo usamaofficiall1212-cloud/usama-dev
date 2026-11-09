@@ -37,11 +37,13 @@ a { color: inherit; }
 h2 { font: 700 1.5rem var(--display); letter-spacing: -0.01em; margin: 0 0 2rem; }
 
 /* Header */
-.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 82%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.top { position: sticky; top: 0; z-index: 20; padding-top: env(safe-area-inset-top, 0px); background: color-mix(in srgb, var(--bg) 82%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
 .bar { display: flex; align-items: center; gap: 1rem; height: 4rem; }
-.brand { font: 700 1.05rem var(--display); text-decoration: none; margin-right: auto; }
+.brand { font: 700 1.05rem var(--display); text-decoration: none; margin-right: auto; transition: color 0.2s ease; }
 nav { display: flex; gap: 0.15rem; }
-nav a { padding: 0.4rem 0.75rem; border-radius: 8px; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+nav a { position: relative; padding: 0.4rem 0.75rem; border-radius: 8px; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+nav a::after { content: ""; position: absolute; left: 0.5rem; right: 0.5rem; bottom: 0.28rem; height: 2px; border-radius: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; }
+nav a[aria-current="true"]::after { display: none; }
 
 .theme { padding: 0.4rem 0.8rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: 500 0.85rem var(--body); cursor: pointer; }
 
@@ -79,12 +81,12 @@ nav a[aria-current="true"] { color: var(--ink); background: var(--surface); }
 /* Projects */
 .project { display: flex; justify-content: center; gap: 4rem; align-items: stretch; padding: 4rem 0; border-top: 1px solid var(--line); }
 .project:nth-child(even) { flex-direction: row-reverse; }
-.stage { --t: var(--tint, var(--accent)); display: flex; justify-content: center; padding: 2.5rem 2.5rem; border-radius: 20px; background: color-mix(in srgb, var(--t) 12%, var(--surface)); border: 1px solid color-mix(in srgb, var(--t) 25%, var(--line)); flex: 0 0 auto; max-width: 320px; margin: 0 auto; }
+.stage { --t: var(--tint, var(--accent)); display: flex; justify-content: center; padding: 2.5rem 2.5rem; border-radius: 20px; background: color-mix(in srgb, var(--t) 12%, var(--surface)); border: 1px solid color-mix(in srgb, var(--t) 25%, var(--line)); flex: 0 0 auto; max-width: 320px; margin: 0 auto; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
 .info { flex: 1 1 34rem; max-width: 34rem; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
 .phone { width: min(260px, 100%); aspect-ratio: 9/19; padding: 8px; border-radius: 34px; background: var(--phone); box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.4); }
 .stage .phone { transition: transform 0.3s; }
 
-.screens { height: 100%; display: flex; overflow-x: auto; overflow-y: hidden; border-radius: 27px; background: var(--line); scroll-snap-type: x mandatory; scrollbar-width: none; }
+.screens { height: 100%; display: flex; overflow-x: auto; overflow-y: hidden; border-radius: 27px; background: var(--line); scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
 .screens::-webkit-scrollbar { display: none; }
 .screens > * { flex: 0 0 100%; width: 100%; height: 100%; object-fit: cover; scroll-snap-align: center; }
 .screens img { cursor: zoom-in; }
@@ -123,7 +125,7 @@ nav a[aria-current="true"] { color: var(--ink); background: var(--surface); }
 .skills h3 { margin: 0 0 0.75rem; font: 700 1rem var(--display); }
 .lead { max-width: 32rem; color: var(--muted); margin: 0 0 1.5rem; }
 .links { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-footer { padding: 0 0 3rem; color: var(--muted); font-size: 0.9rem; }
+footer { padding: 0 0 calc(3rem + env(safe-area-inset-bottom, 0px)); color: var(--muted); font-size: 0.9rem; }
 
 /* Lightbox */
 dialog { max-width: none; max-height: none; width: 100%; height: 100%; padding: 0; border: 0; background: transparent; color: #fff; }
@@ -145,10 +147,23 @@ dialog::backdrop { background: rgba(5, 6, 10, 0.88); }
   .project:nth-child(even) { flex-direction: column; }
   .stage { max-width: 100%; margin: 0; }
   .info { width: 100%; max-width: 100%; text-align: center; }
+  .title, .info .actions, .info .tags { justify-content: center; }
+  .info > ul:not(.tags) { text-align: left; }
   .about { grid-template-columns: 1fr; gap: 2rem; }
   nav a { padding: 0.35rem 0.5rem; font-size: 0.9rem; }
   .brand { display: none; }
   .lb-btn { width: 2.5rem; height: 2.5rem; }
+}
+
+/* Small phones: compact the header so links and theme still fit */
+@media (max-width: 400px) {
+  .bar { gap: 0.5rem; }
+  nav { gap: 0.05rem; }
+  nav a { padding: 0.35rem 0.4rem; font-size: 0.85rem; }
+  nav a::after { left: 0.4rem; right: 0.4rem; }
+  .theme { padding: 0.4rem 0.6rem; font-size: 0.8rem; }
+  .stage { padding: 1.75rem 1rem; }
+  .phone { width: min(240px, 100%); }
 }
 
 /* Contact form */
@@ -180,24 +195,42 @@ button.btn { cursor: pointer; }
 
 /* ===== Motion: transform and opacity only, so it runs on the GPU compositor with almost no cost ===== */
 html { -webkit-tap-highlight-color: transparent; }
-.btn, .theme, .nav-btn, .lb-btn { touch-action: manipulation; }
-.btn, .theme, .nav-btn, nav a { transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease, filter 0.2s ease; }
+.btn, .theme, .nav-btn, .lb-btn, .case-close, nav a { touch-action: manipulation; }
+.btn, .theme, .nav-btn, .lb-btn, .case-close, nav a { transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease, filter 0.2s ease; }
 .tags li { transition: border-color 0.2s ease, color 0.2s ease; }
 
 /* Hover effects only on devices that really hover (mouse, trackpad), so touch screens never get stuck states */
 @media (hover: hover) {
   nav a:hover { color: var(--ink); background: var(--surface); }
+  nav a:hover::after { transform: scaleX(1); }
+  .brand:hover { color: var(--accent); }
   .theme:hover, .btn:hover { border-color: var(--accent); }
+  .theme:hover { background: color-mix(in srgb, var(--accent) 8%, var(--surface)); }
   .btn:hover { transform: translateY(-2px); }
   .btn.primary:hover { filter: brightness(1.08); }
   .nav-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
   .lb-btn:hover { background: rgba(255, 255, 255, 0.2); }
-  .stage .phone:hover { transform: translateY(-6px); }
+  .project:hover .stage { translate: 0 -4px; border-color: color-mix(in srgb, var(--t) 38%, var(--line)); box-shadow: 0 22px 44px -28px color-mix(in srgb, var(--t) 65%, transparent); }
+  .project:hover .badge { scale: 1.08; }
+  .screens img:hover { scale: 1.03; }
+  .stage .phone:hover { transform: translateY(-3px); }
   .hero-phone .phone:hover { transform: rotate(0); }
   .tags li:hover { border-color: var(--accent); color: var(--ink); }
 }
 /* Press feedback for touch and mouse */
 .btn:active, .theme:active, .nav-btn:active { transform: scale(0.96); }
+
+/* Touch screens: mirror the important hover states on press and use comfortable hit areas */
+@media (hover: none), (pointer: coarse) {
+  nav a { display: inline-flex; align-items: center; min-height: 44px; }
+  nav a:active { color: var(--ink); background: var(--surface); }
+  .tags li:active { border-color: var(--accent); color: var(--ink); }
+  .screens img:active { opacity: 0.85; }
+  .theme { min-height: 44px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; }
+  .nav-btn, .lb-btn, .case-close { width: 44px; height: 44px; }
+  .lb-btn:active, .case-close:active { transform: scale(0.95); }
+}
 
 /* Screenshots fade in once loaded */
 .js .screens img { opacity: 0; }
@@ -208,7 +241,10 @@ html { -webkit-tap-highlight-color: transparent; }
 .top::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 100%; height: 2px; background: var(--accent); transform-origin: 0 50%; transform: scaleX(0); }
 
 @media (prefers-reduced-motion: no-preference) {
-  .js .screens img { transition: opacity 0.4s ease; }
+  .js .screens img { transition: opacity 0.4s ease, scale 0.3s ease; }
+  .stage { transition: translate 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease; }
+  .badge { transition: scale 0.25s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  nav a::after { transition: transform 0.2s ease; }
   .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); transition-delay: calc(var(--i, 0) * 70ms); }
   .js .reveal.in { opacity: 1; transform: none; }
   dialog[open] { animation: pop 0.22s ease-out; }

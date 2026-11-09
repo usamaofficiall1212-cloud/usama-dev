@@ -27,6 +27,12 @@ function buildPhone(shots, name) {
       });
       img.src = src; img.alt = name + " screenshot " + (i + 1);
       img.loading = i ? "lazy" : "eager"; img.draggable = false;
+      img.decoding = "async";
+      if (/\.webp$/i.test(src)) {
+        const thumb = src.replace(/\.webp$/i, "-720.webp");
+        img.srcset = thumb + " 720w, " + src + " 1200w";
+        img.sizes = "(max-width: 760px) 220px, 260px";
+      }
       screens.appendChild(img);
       if (img.complete && img.naturalWidth) {
         img.classList.add("loaded");

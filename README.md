@@ -17,13 +17,15 @@ images/projects/    One folder per project for screenshots
 
 ## Add a project
 
-1. Create `images/projects/<project-name>/` and add screenshots (PNG or WebP, about 1080x2340).
+1. Create `images/projects/<project-name>/` and add screenshots (PNG or JPG, about 1200px wide).
 2. Name the screenshots `01.png`, `02.png`, `03.png`... in that folder.
-3. Copy a block in `js/data.js` and fill it in. For 5 screenshots use:
+3. Convert them to WebP and generate the 720px gallery variants:
+   `pip install pillow && python3 tools/to_webp.py images/projects/my-app`
+4. Copy a block in `js/data.js` and fill it in. For 5 screenshots use:
    `shots: screenshots("my-app", 5)`
-   For WebP or JPG add the extension: `screenshots("my-app", 5, "webp")`.
+   For JPG or PNG add the extension: `screenshots("my-app", 5, "png")`.
    You can also list paths by hand, in any order.
-4. Refresh the page.
+5. Refresh the page.
 
 ## Change the look
 

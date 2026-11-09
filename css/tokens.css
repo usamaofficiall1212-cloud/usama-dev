@@ -12,7 +12,6 @@
   --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
   --body:"Hanken Grotesk","Segoe UI",system-ui,sans-serif;
   box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
