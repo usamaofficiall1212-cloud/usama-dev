@@ -1,6 +1,14 @@
 /* Design tokens: colors, fonts, themes. Change the look of the whole site here. */
 :root{
   --bg:#F8F9FB; --surface:#FFFFFF; --ink:#13161B; --muted:#5B6270; --line:#E3E6EC; --accent:#2D4BEB; --phone:#13161B;
+  /* Ambient background texture (dots, stars, glows). Tune intensity here. */
+  --bg-dot:rgba(19,22,27,0.10);
+  --star-core:rgba(45,75,235,0.55);
+  --star-halo:rgba(45,75,235,0.18);
+  --star-neutral:rgba(70,80,105,0.30);
+  --glow-a:rgba(45,75,235,0.10);
+  --glow-b:rgba(123,92,255,0.07);
+  --dot-size:24px;
   --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
   --body:"Hanken Grotesk","Segoe UI",system-ui,sans-serif;
   box-sizing:border-box;
@@ -8,6 +16,10 @@
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){--bg:#0F1115;--surface:#171A20;--ink:#EEF0F4;--muted:#9AA1AE;--line:#272B33;--accent:#8EA2FF;--phone:#05060A;color-scheme:dark}
+  :root:not([data-theme="light"]){--bg:#0F1115;--surface:#171A20;--ink:#EEF0F4;--muted:#9AA1AE;--line:#272B33;--accent:#8EA2FF;--phone:#05060A;
+    --bg-dot:rgba(238,240,244,0.05);--star-core:rgba(220,230,255,0.95);--star-halo:rgba(142,162,255,0.35);--star-neutral:rgba(255,255,255,0.55);
+    --glow-a:rgba(142,162,255,0.14);--glow-b:rgba(123,92,255,0.10);color-scheme:dark}
 }
-:root[data-theme="dark"]{--bg:#0F1115;--surface:#171A20;--ink:#EEF0F4;--muted:#9AA1AE;--line:#272B33;--accent:#8EA2FF;--phone:#05060A;color-scheme:dark}
+:root[data-theme="dark"]{--bg:#0F1115;--surface:#171A20;--ink:#EEF0F4;--muted:#9AA1AE;--line:#272B33;--accent:#8EA2FF;--phone:#05060A;
+  --bg-dot:rgba(238,240,244,0.05);--star-core:rgba(220,230,255,0.95);--star-halo:rgba(142,162,255,0.35);--star-neutral:rgba(255,255,255,0.55);
+  --glow-a:rgba(142,162,255,0.14);--glow-b:rgba(123,92,255,0.10);color-scheme:dark}

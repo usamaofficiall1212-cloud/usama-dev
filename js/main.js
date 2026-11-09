@@ -393,6 +393,51 @@ function initCursor(profile) {
   });
 }
 
+/* ---------- Ambient starfield: static stars everywhere, a few twinkle on capable devices ---------- */
+function initBackground(profile) {
+  const bg = document.querySelector(".bg");
+  if (!bg) return;
+  const n = navigator;
+  const weak = (n.connection && n.connection.saveData) ||
+    (n.hardwareConcurrency && n.hardwareConcurrency <= 4) ||
+    (n.deviceMemory && n.deviceMemory <= 4);
+  const animate = profile.twinkle !== false && !reduceMotion() && !weak;
+
+  let seed = 0x9e3779b9;                             // seeded so the layout is stable between loads
+  const rand = () => {
+    seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+
+  const w = window.innerWidth, h = window.innerHeight;
+  const count = Math.max(18, Math.min(48, Math.round((w * h) / 26000)));
+  const cols = Math.max(3, Math.round(Math.sqrt(count * (w / h))));
+  const rows = Math.max(3, Math.ceil(count / cols));
+
+  // Jittered grid: even spread with natural-looking randomness (no clustering).
+  let made = 0;
+  outer: for (let ry = 0; ry < rows; ry++) {
+    for (let rx = 0; rx < cols; rx++) {
+      if (made >= count) break outer;
+      const star = el("i", "star");
+      if (rand() < 0.28) star.classList.add("n");       // a few neutral stars for variety
+      star.style.setProperty("--s", (2 + rand() * 4).toFixed(2) + "px");
+      star.style.setProperty("--o", (0.6 + rand() * 0.4).toFixed(2));
+      star.style.left = (((rx + 0.15 + rand() * 0.7) / cols) * 100).toFixed(2) + "%";
+      star.style.top = (((ry + 0.15 + rand() * 0.7) / rows) * 100).toFixed(2) + "%";
+      if (animate && rand() < 0.28) {
+        star.classList.add("t");
+        star.style.setProperty("--dur", (6 + rand() * 6).toFixed(1) + "s");
+        star.style.setProperty("--delay", (-rand() * 10).toFixed(1) + "s");
+      }
+      bg.appendChild(star);
+      made++;
+    }
+  }
+}
+
 /* ---------- Start ---------- */
 renderHero(PROFILE, PROJECTS);
 PROJECTS.forEach(p => byId("projects").appendChild(renderProject(p)));
@@ -400,4 +445,4 @@ renderAbout(PROFILE, EXPERIENCE);
 renderSkills(SKILLS);
 renderContact(PROFILE);
 byId("yr").textContent = new Date().getFullYear();
-initReveal(); initCursor(PROFILE); initLightbox(); initCase(PROJECTS); initForm(PROFILE); initTheme(); initNavHighlight();
+initReveal(); initCursor(PROFILE); initBackground(PROFILE); initLightbox(); initCase(PROJECTS); initForm(PROFILE); initTheme(); initNavHighlight();
